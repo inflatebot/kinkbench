@@ -1,0 +1,77 @@
+---
+meta:
+ url: "http://localhost:5001/api"
+ eval_inputs: ["sample_1","sample_2"]
+---
+llm_params:
+ system_prompt: ""
+ system_tag: ""
+ #system_tag: "<|start_header_id|>system<|end_header_id|>\n\n"
+ user_tag : "<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n"
+ bot_tag : "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+ eos_tag: "<|eot_id|>"
+ history_prefill: ""
+ context_template: "${system_tag}${system_prompt}${history}${input}"
+---
+kobold_params:
+  max_context_length: 8192
+  max_length: 100
+  quiet: False
+  rep_pen: 1.1
+  rep_pen_range: 256
+  rep_pen_slope: 1
+  temperature: 0.5
+  tfs: 1
+  top_a: 0
+  top_k: 100
+  top_p: 0.9
+  typical: 1
+  trim_stop: True
+  stop_sequence: [system_tag,user_tag,bot_tag,eos_tag]
+---
+story_details:
+ rating: "A rating which has a corresponding key below (you can add your own)"
+ tags: ["Comma,""Separated,""Tags"]
+ focus: "One of the above"
+---
+ratings:
+ G: "The rating of G implies that the fetish content was intended to be minimally sexual, with the fetish contributing primarily a narrative role.\n"
+ PG-13: "The rating of PG-13 implies that while it is meant to be arousing, it is not meant to be sexually explicit.\n"
+ R: "The rating of R implies that the story is meant to be titillating and suggestive, but not sexually explicit.\n"
+ X: "The rating of X implies that the story is meant to be sexually explicit.\n"
+---
+steps:
+ ic:
+  sample_1:
+   outfile: "sample_1"
+   prompt: "Write a story using the following tags: $tags, Rating: $rating \n"
+  sample_2:
+   outfile: sample_2
+   prompt: "Write another story with the same tags, that's different to the previous one, and doesn't reference the previous characters.\n"
+  ic_eval_1:
+   outfile: "ic_eval_1"
+   prompt: "The stories we generated were intended to be fetish erotica. $rating_string\nTo that end, how well do you think the first sample fares? Be honest, and only consider the first sample.\n"
+  ic_eval_2:
+   outfile: "ic_eval_2"
+   prompt: "The stories we generated were intended to be fetish erotica. $rating_string\nTo that end, how well do you think the second sample fares? Be honest, and only consider the second sample.\n"
+
+ oc_eval:
+  review:
+   prompt: "
+   The following is a sample from a story with the following tags: $tags, Rating: $rating \n***\n $story_text \n***\nWe will now discuss the sample.\n
+   This story is intended to be fetish erotica.\n$rating_string
+   To that end, how well do you think the sample fares? Give a general review. Be honest, and consider the following aspects:
+   - Prose (how well was it written, aesthetically speaking?)
+   - Inclusion of tagged elements (how well does the sample integrate its intended themes? does it serve its purpose?)
+   - Internal logical consistency (does anything stand out as strange, when accounting for suspension of disbelief? Are there logical errors?)
+   - Does the rating of $rating fit with the content?"
+   clearHistory: True
+
+  make_up_guy_1:
+   prompt: "Setting aside the story itself for the moment. Given the tags for this story: $tags \n Imagine a reader who enjoys stories with these tags. What might that imagined reader be like? What do you think the personality and sexual proclivities of this imagined reader might be? Does this story appeal to them? Why or why not? Answer in 4 to 6 sentences."
+
+  make_up_guy_2:
+   prompt: "Set aside the first imagined reader, and answer the previous question again for a second imagined reader. This new imagined reader should enjoy stories with the sample's tags the same as the first, but should have the opposite opinion of this story in particular; that is to say, if you believe the first *would* enjoy this story, imagine one who *doesn't*, and vice versa."
+
+  intent_eval:
+   prompt: "The intended focus of this story is $focus. What do you think is interesting or arousing about this topic? Does this story do a good job of expressing this? Answer in 3 to 6 sentences."
