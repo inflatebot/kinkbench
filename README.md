@@ -1,6 +1,6 @@
 # Kinkbench - Make your models grade their *own* writing.
 
-Kinkbench is a semi-supervised evaluation utility for models intended to produce fetish-oriented content. (It may however be useful to anybody developing models which require knowledge which may be very low-rank in their foundations.)
+Kinkbench is a semi-supervised evaluation utility for models intended to produce fetish-oriented content. (It may however be useful to anybody developing models which require knowledge which may be niche or under-represented in their foundations.)
 
 The intention is for the user to read the generated samples, then compare their findings to the model's self-report, so as to develop an understanding of the model's priorities which, ideally, are more consistent than chance.
 It was originally conceived after I noticed that Helide had a tendency to veer darker than anticipated in testing, and when asking about its priorities directly, it seemed to value this aspect quite highly.
